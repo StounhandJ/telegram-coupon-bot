@@ -20,6 +20,9 @@ notFoundImg = "FileNotFound/order_pr_detailed_infoimg.jpg"  # Изображен
 notFoundDocument = "FileNotFound/404.txt"  # Докумень когда не найден запрашиваемый
 
 message = {
+    "confirmations_agreement": "<b>Вы подтверждаете согласие с данным соглашением?</b>",
+    "confirmations_agreement_no": "❗ <i>При отказе вы не сможете пользоваться услугами бота</i> ❗\n\n<b>Вы подтверждаете согласие с данным соглашением?</b>",
+
     "Welcome_Menu": "Добрый день. Чего желаете?",
     "About_Us": "Neproblemka.ru - <i>сервис по решению ваших проблем в короткие сроки.</i>\n\n✔ <b>Ваша проблема - наше решение ✔</b>\n\nИспользуйте данную почту для связи: support@neproblemka.ru",
     "Main_Menu": "Главное меню",
@@ -35,6 +38,9 @@ message = {
     "increased_requests": "Вы превысили количество обращений в день",
     "repeat_requests": "Вы недавно отправили сообщение.\nПовторное можно будет отправить через\n⏱ <b>{min}</b> минут ⏱",
     "report_mes": "Напишите ваше сообщение:",
+    "comment_email": "Напишите свой email для связи: ",
+    "email_confirmation": "Ваш email:\n\n{text}",
+    "comment_email_no_validation": "Вы ввели неверный email, повторите:",
 }
 
 adminMessage = {

@@ -3,13 +3,14 @@ import time
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import Text
+from re import *
 
 from data import config
 from keyboards.inline import buttons
 from keyboards.inline.callback_datas import confirmation_callback
 from loader import dp
 from states.user_mes import UserMes
-from utils.db_api.models import messagesCouponModel, banListModel
+from utils.db_api.models import messagesCouponModel, banListModel, userInformationModel
 from utils.notify_admins import notify_admins_message
 from utils import function
 from utils.telegram_files import TelegramFiles
@@ -28,11 +29,25 @@ async def start_write_administration(message: types.Message, state: FSMContext):
         mes = config.message["repeat_requests"].format(
             min=int((lastMessage[len(lastMessage) - 1].date-(time.time() - 60 * 30))/60))
     else:
-        await UserMes.message.set()
+        await UserMes.email.set()
         await function.set_state_active(state)
-        mes = config.message["report_mes"]
+        mes = config.message["comment_email"]
         keyboard = await buttons.getCustomKeyboard(cancel="Отменить")
     await message.answer(text=mes, reply_markup=keyboard)
+
+
+@dp.message_handler(state=UserMes.email)
+async def adding_comment(message: types.Message, state: FSMContext):
+    message.text = function.string_handler(message.text)
+    pattern = compile('(^|\s)[-a-z0-9_.]+@([-a-z0-9]+\.)+[a-z]{2,6}(\s|$)')
+    if pattern.match(message.text):
+        await state.update_data(email=message.text)
+        await UserMes.wait.set()
+        await message.answer(config.message["email_confirmation"].format(text=message.text),
+                             reply_markup=await buttons.getConfirmationKeyboard(cancel="Отменить заказ"))
+    else:
+        await message.answer(config.message["comment_email_no_validation"].format(text=message.text),
+                             reply_markup=await buttons.getCustomKeyboard(cancel="Отменить заказ"))
 
 
 @dp.message_handler(state=UserMes.message)
@@ -98,6 +113,10 @@ async def adding_comment_yes(call: types.CallbackQuery, state: FSMContext):
         await UserMes.documentCheck.set()
         mes = config.message["comment_documentCheck"]
         keyboard = await buttons.getConfirmationKeyboard(cancel="Отменить")
+    elif "UserMes:email" == state_active:
+        await UserMes.message.set()
+        mes = config.message["report_mes"]
+        keyboard = await buttons.getCustomKeyboard(cancel="Отменить")
     await function.set_state_active(state)
     await call.message.edit_text(text=mes, reply_markup=keyboard)
     await call.answer()
@@ -115,6 +134,8 @@ async def adding_comment_no(call: types.CallbackQuery, state: FSMContext):
         return
     elif "UserMes:message" == state_active:
         await UserMes.message.set()
+    elif "UserMes:email" == state_active:
+        await UserMes.email.set()
 
     await call.message.edit_text(text=config.message["message_no"], reply_markup=keyboard)
     await call.answer()
@@ -130,7 +151,9 @@ async def create_mes(call, state):
     data = await state.get_data()
     message = data.get("message") if "message" in data.keys() else ""
     document = [data.get("document").file_id] if "document" in data.keys() else []
+    email = data.get("email") if "email" in data.keys() else ""
     messagesCouponModel.create_messages(call.from_user.id, message, document)
+    userInformationModel.update_email(call.from_user.id, email)
     await state.finish()
     await notify_admins_message("Новое сообщение")
     await call.message.edit_text(config.message["message_sent"])
