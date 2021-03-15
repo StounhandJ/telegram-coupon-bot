@@ -44,10 +44,10 @@ async def adding_comment(message: types.Message, state: FSMContext):
         await state.update_data(email=message.text)
         await UserMes.wait.set()
         await message.answer(config.message["email_confirmation"].format(text=message.text),
-                             reply_markup=await buttons.getConfirmationKeyboard(cancel="Отменить заказ"))
+                             reply_markup=await buttons.getConfirmationKeyboard(cancel="Отменить"))
     else:
         await message.answer(config.message["comment_email_no_validation"].format(text=message.text),
-                             reply_markup=await buttons.getCustomKeyboard(cancel="Отменить заказ"))
+                             reply_markup=await buttons.getCustomKeyboard(cancel="Отменить"))
 
 
 @dp.message_handler(state=UserMes.message)
