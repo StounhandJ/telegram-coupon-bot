@@ -29,6 +29,7 @@ message = {
     "About_Us": "Neproblemka.ru - <i>сервис по решению ваших проблем в короткие сроки.</i>\n\n✔ <b>Ваша проблема - наше решение ✔</b>\n\nИспользуйте данную почту для связи: support@neproblemka.ru",
     "Main_Menu": "Главное меню",
     "Help_Menu": "Все ваши вопросы просим направить на почту: <b>support@neproblemka.com</b>",
+    "use_discount": "Использовать полученную скидку можно тут @neproblemka_Bot",
     "comment_documentCheck": "Есть дополнительный файл?",
     "comment_document": "Прикрепите файл, если у вас несколько файлов добавьте архив:",
     "document_confirmation": "Ваш документ:\n{text}",

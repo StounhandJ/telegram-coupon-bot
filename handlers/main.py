@@ -58,3 +58,8 @@ async def show_about(message: types.Message):
 @dp.message_handler(commands=["Ukeyboard"])
 async def show_help(message: types.Message):
     await message.answer(config.adminMessage["help"], reply_markup=menu)
+
+
+@dp.message_handler(Text(equals=["Использовать скидку"]))
+async def show_product(message: types.Message):
+    await message.answer(config.message["use_discount"])
