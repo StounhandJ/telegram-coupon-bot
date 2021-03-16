@@ -163,7 +163,7 @@ async def create_mes(call, state):
 
 
 async def save_file(document, userID):
-    path = f"{os.getcwd()}/documents/{userID}"
+    path = f"{os.path.dirname(os.path.abspath(__file__))}/../../documents/{userID}"
     if not os.path.exists(path):
         os.makedirs(path)
     file_info = await bot.get_file(file_id=document.file_id)
