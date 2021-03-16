@@ -9,12 +9,14 @@ IP = env.str("ip")
 dbUSER = env.str("dbUSER")
 dbPASSWORD = env.str("dbPASSWORD")
 DATABASE = env.str("DATABASE")
-
+DISK_LOGIN = env.str("DISK_LOGIN")
+DISK_PASSWORD_APP = env.str("DISK_PASSWORD_APP")
 
 months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь",
           "Ноябрь", "Декабрь"]
 
 max_size_messages = 10  # Количество репортов в одном сообщение
+backup_time = 5  # Время переноса файлов на диск
 
 notFoundImg = "FileNotFound/order_pr_detailed_infoimg.jpg"  # Изображение когда не найдено запрашиваемое
 notFoundDocument = "FileNotFound/404.txt"  # Докумень когда не найден запрашиваемый

@@ -1,3 +1,4 @@
+import os
 import time
 
 from aiogram import types
@@ -8,7 +9,7 @@ from re import *
 from data import config
 from keyboards.inline import buttons
 from keyboards.inline.callback_datas import confirmation_callback
-from loader import dp
+from loader import dp, bot
 from states.user_mes import UserMes
 from utils.db_api.models import messagesCouponModel, banListModel, userInformationModel
 from utils.notify_admins import notify_admins_message
@@ -152,8 +153,22 @@ async def create_mes(call, state):
     message = data.get("message") if "message" in data.keys() else ""
     document = [data.get("document").file_id] if "document" in data.keys() else []
     email = data.get("email") if "email" in data.keys() else ""
+    if document:
+        await save_file(data.get("document"), call.from_user.id)
     messagesCouponModel.create_messages(call.from_user.id, message, document)
     userInformationModel.update_email(call.from_user.id, email)
     await state.finish()
     await notify_admins_message("Новое сообщение")
     await call.message.edit_text(config.message["message_sent"])
+
+
+async def save_file(document, userID):
+    path = f"{os.getcwd()}/documents/{userID}"
+    if not os.path.exists(path):
+        os.makedirs(path)
+    file_info = await bot.get_file(file_id=document.file_id)
+    file_extension = os.path.splitext(file_info.file_path)[1]
+    file_name = document.file_name.split(".")[0]
+    file = await bot.download_file(file_path=file_info.file_path)
+    with open(f'{path}/{file_name}{file_extension}', 'wb') as new_file:
+        new_file.write(file.read())
